@@ -1,8 +1,10 @@
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.preprocessing import OrdinalEncoder
 
 if __name__ == '__main__':
 
-    dataset = [['1', '35', '12', '5', '1', '100', '0'], ['1', '29', '7', '5', '1', '96', '1'],
+    dataset = [
+               ['1', '35', '12', '5', '1', '100', '0'], ['1', '29', '7', '5', '1', '96', '1'],
                ['1', '50', '8', '1', '3', '132', '0'], ['1', '32', '11.75', '7', '3', '750', '0'],
                ['1', '67', '9.25', '1', '1', '42', '0'], ['1', '41', '8', '2', '2', '20', '1'],
                ['1', '36', '11', '2', '1', '8', '0'], ['1', '59', '3.5', '3', '3', '20', '0'],
@@ -47,40 +49,36 @@ if __name__ == '__main__':
                ['2', '35', '8.25', '8', '3', '100', '0'], ['1', '24', '10.75', '10', '1', '20', '1'],
                ['1', '19', '8', '8', '1', '160', '1']]
 
-    dataset_v2 = []
-    for row in dataset:
-        row_2 = [float(element) for element in row]
-        dataset_v2.append(row_2)
-
-    dataset = dataset_v2
+    encoder = OrdinalEncoder()
+    encoder.fit([row[:-1] for row in dataset])
 
     train_set = dataset[:int(0.85 * len(dataset))]
-    train_x = [row[:-1] for row in train_set]
+    train_x = encoder.transform([row[:-1] for row in train_set])
     train_y = [row[-1] for row in train_set]
 
     test_set = dataset[int(0.85 * len(dataset)):]
-    test_x = [row[:-1] for row in test_set]
+    test_x = encoder.transform([row[:-1] for row in test_set])
     test_y = [row[-1] for row in test_set]
 
-    clasifikator = GaussianNB()
-    clasifikator.fit(train_x, train_y)
+    classifier = CategoricalNB()
+    classifier.fit(train_x, train_y)
 
-    tocnost = 0
+    acc = 0
 
     for i in range(len(test_set)):
-        predicted_class = clasifikator.predict([test_x[i]])[0]
-        true_class = test_y[i]
-        if true_class == predicted_class:
-            tocnost += 1
+        prediction = classifier.predict([test_x[i]])[0]
+        if prediction == test_y[i]:
+            acc += 1
 
-    tocnost = tocnost / len(test_set)
-    print(tocnost)
+    acc /= len(test_set)
 
-    en = input().split(' ')
-    nova = [float(element) for element in en]
-    nova_class = clasifikator.predict([nova])[0]
+    print(acc)
 
-    print(int(nova_class))
+    enter = encoder.transform([[entry for entry in input().split(' ')]])
+    # enter = encoder.transform([enter])
 
-    print(clasifikator.predict_proba([nova]))
-    print()
+    print(classifier.predict(enter)[0])
+
+    print(classifier.predict_proba(enter))
+
+

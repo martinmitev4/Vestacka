@@ -1,4 +1,4 @@
-from sklearn.naive_bayes import CategoricalNB
+from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import OrdinalEncoder
 
 if __name__ == '__main__':
@@ -49,18 +49,22 @@ if __name__ == '__main__':
                ['2', '35', '8.25', '8', '3', '100', '0'], ['1', '24', '10.75', '10', '1', '20', '1'],
                ['1', '19', '8', '8', '1', '160', '1']]
 
-    encoder = OrdinalEncoder()
-    encoder.fit([row[:-1] for row in dataset])
+    dataset_v2 = []
+    for row in dataset:
+        row_2 = [float(element) for element in row]
+        dataset_v2.append(row_2)
+
+    dataset = dataset_v2
 
     train_set = dataset[:int(0.85 * len(dataset))]
-    train_x = encoder.transform([row[:-1] for row in train_set])
+    train_x = [row[:-1] for row in train_set]
     train_y = [row[-1] for row in train_set]
 
     test_set = dataset[int(0.85 * len(dataset)):]
-    test_x = encoder.transform([row[:-1] for row in test_set])
+    test_x = [row[:-1] for row in test_set]
     test_y = [row[-1] for row in test_set]
 
-    classifier = CategoricalNB()
+    classifier = GaussianNB()
     classifier.fit(train_x, train_y)
 
     acc = 0
@@ -74,11 +78,11 @@ if __name__ == '__main__':
 
     print(acc)
 
-    enter = encoder.transform([[entry for entry in input().split(' ')]])
-    # enter = encoder.transform([enter])
+    enter = [float(entry) for entry in input().split(' ')]
 
-    print(classifier.predict(enter)[0])
+    print(int(classifier.predict([enter])[0]))
 
-    print(classifier.predict_proba(enter))
+    print(classifier.predict_proba([enter]))
 
 
+# 20 4 3 1 6

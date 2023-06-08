@@ -167,6 +167,7 @@ if __name__ == '__main__':
         classifier2.fit(train_x_2, train_y_2)
         entry = [entry[i] for i in range(len(entry)) if i != col]
         print(classifier2.predict([entry])[0])
+        print(classifier2.predict(scaler2.transform([entry]))[0])
 
 
 

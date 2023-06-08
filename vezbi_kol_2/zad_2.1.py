@@ -159,14 +159,13 @@ if __name__ == '__main__':
         test_x_2 = [row[:-1] for row in test_set_2]
         test_y_2 = [row[-1] for row in test_set_2]
 
-        # scaler2 = MinMaxScaler((-1, 1))
-        # scaler2.fit(train_x_2)
+        scaler2 = MinMaxScaler((-1, 1))
+        scaler2.fit(train_x_2)
 
         classifier2 = MLPClassifier(nev, activation='relu', max_iter=20, random_state=0, learning_rate_init=learning)
-        # classifier2.fit(scaler2.transform(train_x_2), train_y_2)
-        classifier2.fit(train_x_2, train_y_2)
+        classifier2.fit(scaler2.transform(train_x_2), train_y_2)
         entry = [entry[i] for i in range(len(entry)) if i != col]
-        print(classifier2.predict([entry])[0])
+        print(classifier2.predict(scaler2.transform([entry]))[0])
 
 
 
